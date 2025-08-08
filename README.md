@@ -41,7 +41,8 @@ ClickBench is a standardized benchmark for analytical databases that:
 ### Prerequisites
 
 - Ubuntu 22.04+ (recommended)
-- 16GB+ RAM, 100GB+ storage
+- 64GB+ RAM, 1000GB+ storage
+- 16 cores machines
 - Docker installed
 - Administrative privileges
 
