@@ -50,8 +50,11 @@ ClickBench is a standardized benchmark for analytical databases that:
 Each database can be tested independently:
 
 ```bash
-# StarRocks
+# StarRocks - Standard ClickBench
 cd starrocks && ./benchmark.sh
+
+# StarRocks - Enhanced with JOINs (60 total queries)
+cd starrocks && ./benchmark_enhanced.sh
 
 # Firebolt
 cd firebolt && ./benchmark.sh
@@ -84,14 +87,23 @@ cd singlestore && ./benchmark.sh
 - Compatible with ClickBench analysis tools
 - Measures both performance and resource usage
 
-## 🔍 The 43 Benchmark Queries
+## 🔍 Comprehensive Query Testing
 
-The queries test various analytical scenarios:
+### Standard ClickBench (43 Queries)
+The original ClickBench queries test various analytical scenarios:
 
 1. **Basic Aggregations** (1-7): COUNT, SUM, AVG, MIN, MAX
 2. **GROUP BY Operations** (8-18): Various grouping scenarios
 3. **String Processing** (19-29): LIKE patterns, regex, text functions
 4. **Complex Analytics** (30-43): Wide aggregations, time series, pagination
+
+### Enhanced JOIN Queries (17 Additional Queries)
+Extended test suite includes multi-table operations:
+
+1. **Basic JOINs** (44-47): INNER/LEFT JOIN with dimension tables
+2. **Complex JOINs** (48-52): Multiple tables, window functions, subqueries
+3. **Analytics JOINs** (53-57): Cross-dimensional analysis, user journeys
+4. **Advanced JOINs** (58-60): Time zones, market analysis, ranking
 
 Examples:
 ```sql
@@ -102,9 +114,20 @@ SELECT COUNT(*) FROM hits;
 SELECT RegionID, COUNT(DISTINCT UserID) AS u 
 FROM hits GROUP BY RegionID ORDER BY u DESC LIMIT 10;
 
--- Query 30: Wide aggregation (89 columns)
-SELECT SUM(ResolutionWidth), SUM(ResolutionWidth + 1), ... 
-FROM hits;
+-- Query 44: JOIN with search engines (Enhanced)
+SELECT se.SearchEngineName, COUNT(*) AS hits_count
+FROM hits h 
+INNER JOIN search_engines se ON h.SearchEngineID = se.SearchEngineID
+WHERE h.SearchPhrase <> ''
+GROUP BY se.SearchEngineName ORDER BY hits_count DESC LIMIT 10;
+
+-- Query 60: Complex multi-table analysis (Enhanced)
+SELECT r.Country, u.UserSegment, COUNT(*) AS total_hits,
+       ROW_NUMBER() OVER (PARTITION BY r.Country ORDER BY COUNT(*) DESC) AS rank
+FROM hits h
+INNER JOIN users u ON h.UserID = u.UserID
+INNER JOIN regions r ON h.RegionID = r.RegionID
+GROUP BY r.Country, u.UserSegment ORDER BY total_hits DESC LIMIT 50;
 ```
 
 ## 📈 Expected Results
