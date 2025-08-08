@@ -227,3 +227,4 @@ This project follows the same license as the original ClickBench repository.
 - ClickHouse team for creating the ClickBench benchmark
 - Database vendors for providing accessible testing platforms
 - Community contributors for feedback and improvements
+# clickbench-test-suite
